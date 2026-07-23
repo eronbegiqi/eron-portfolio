@@ -7,31 +7,31 @@ import ScrambleText from "./ScrambleText";
 const services = [
   {
     number: "01",
-    title: "UX/UI Design",
+    title: "Product design for B2B SaaS",
     description:
-      "Full product design from discovery and wireframing to polished, high-fidelity interfaces. User research, information architecture, and scalable design systems.",
-    tags: ["Figma", "Prototyping", "Research", "Design Systems"],
+      "Complex workflows, data-dense interfaces, discovery to delivery.",
+    tags: ["Workflows", "Research", "Prototyping"],
   },
   {
     number: "02",
-    title: "Web Development",
+    title: "Design systems",
     description:
-      "Pixel-perfect, accessible implementation using React and Next.js. Fast, maintainable, production-ready code that brings designs to life exactly as intended.",
-    tags: ["React", "Next.js", "TypeScript", "Tailwind"],
+      "Scalable, token-based systems that unify experience across a multi-product platform.",
+    tags: ["Tokens", "Components", "Governance"],
   },
   {
     number: "03",
-    title: "Brand Identity",
+    title: "AI-native workflow",
     description:
-      "Visual identity systems that communicate clearly and scale across all touchpoints — logos, type systems, color, motion guidelines, and brand documentation.",
-    tags: ["Identity", "Design Systems", "Guidelines"],
+      "Figma MCP and Claude across discovery, prototyping, and delivery, plus custom tooling.",
+    tags: ["Figma MCP", "Claude", "Tooling"],
   },
   {
     number: "04",
-    title: "Interaction Design",
+    title: "Design + build",
     description:
-      "Microinteractions, animations, and prototypes that make products feel alive. Motion that guides attention and rewards users without ever getting in the way.",
-    tags: ["Motion", "Framer", "Prototyping", "Polish"],
+      "React/Next.js implementation, so design intent ships intact.",
+    tags: ["React", "Next.js", "TypeScript"],
   },
 ];
 

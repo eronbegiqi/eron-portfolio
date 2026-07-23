@@ -116,18 +116,20 @@ export default function About() {
           transition={{ duration: 0.7, delay: 0.15, ease: [0.23, 1, 0.32, 1] }}
         >
           <p className="text-base text-[#333] leading-[1.85] mb-5">
-            I&apos;m a UX/UI Designer and Web Developer with over 7 years of
-            experience crafting digital products that people actually enjoy using.
+            I&apos;m a product designer focused on complex, data-rich B2B SaaS.
+            I work end to end — from research and workflows to the design
+            systems that keep a multi-product platform consistent.
           </p>
           <p className="text-sm text-[#6b6b6b] leading-[1.85] mb-5">
-            I bridge the gap between design and development — what I design, I
-            can build. That means no handoff friction, no &ldquo;that can&apos;t
-            be implemented&rdquo; conversations. Just fast iteration and great
-            outcomes.
+            Because I also build in React and Next.js, my designs ship without
+            the usual handoff friction. Lately I&apos;ve gone AI-native:
+            pulling live design tokens with the Figma MCP, using Claude across
+            discovery, prototyping, and delivery, and building my own tooling
+            to compress the loop from idea to production.
           </p>
           <p className="text-sm text-[#6b6b6b] leading-[1.85] mb-10">
-            Currently at TechNexus, previously at studios and startups across
-            Europe.
+            Right now I&apos;m designing DealerAssist, a B2B SaaS platform for
+            US car dealerships.
           </p>
 
           {/* Skill chips with staggered hover */}

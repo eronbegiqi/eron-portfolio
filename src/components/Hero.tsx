@@ -11,13 +11,6 @@ import {
 import Link from "next/link";
 import MagneticButton from "./MagneticButton";
 
-const roles = [
-  "UX/UI Designer",
-  "Web Developer",
-  "Problem Solver",
-  "Creative Technologist",
-];
-
 function SplitReveal({
   text,
   serif,
@@ -101,7 +94,6 @@ function SecretPeriod() {
 
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
-  const [roleIndex, setRoleIndex] = useState(0);
 
   const rawX = useMotionValue(0.5);
   const rawY = useMotionValue(0.5);
@@ -124,13 +116,6 @@ export default function Hero() {
     window.addEventListener("mousemove", onMove, { passive: true });
     return () => window.removeEventListener("mousemove", onMove);
   }, [rawX, rawY]);
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setRoleIndex((i) => (i + 1) % roles.length);
-    }, 2800);
-    return () => clearInterval(id);
-  }, []);
 
   return (
     <section
@@ -173,7 +158,7 @@ export default function Hero() {
           transition={{ duration: 0.5, delay: 0.3, ease: [0.23, 1, 0.32, 1] }}
           className="text-[11px] text-[#bbb] tracking-[0.22em] uppercase mb-12 select-none"
         >
-          Designer & Developer — 2025
+          Product Designer — B2B SaaS
         </motion.p>
 
         {/* Name */}
@@ -195,29 +180,27 @@ export default function Hero() {
           className="w-full max-w-xs h-px bg-[#e8e8e8] origin-center mb-8"
         />
 
-        {/* Animated role ticker */}
+        {/* Role line — single, static position statement (no cycling) */}
         <div className="overflow-hidden h-6 mb-4">
-          <AnimatePresence mode="wait">
-            <motion.p
-              key={roleIndex}
-              initial={{ y: "110%", opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: "-110%", opacity: 0 }}
-              transition={{ duration: 0.36, ease: [0.23, 1, 0.32, 1] }}
-              className="text-sm text-[#888] tracking-wide"
-            >
-              {roles[roleIndex]}
-            </motion.p>
-          </AnimatePresence>
+          <motion.p
+            initial={{ y: "110%", opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.85, ease: [0.23, 1, 0.32, 1] }}
+            className="text-sm text-[#888] tracking-wide"
+          >
+            Product designer for complex B2B SaaS.
+          </motion.p>
         </div>
 
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 1.3 }}
-          className="text-sm text-[#aaa] mb-10 max-w-xs"
+          className="text-sm text-[#aaa] mb-10 max-w-xl leading-relaxed"
         >
-          Based in Europe — working globally
+          I design data-rich workflows and the design systems that scale them
+          across multi-product platforms — and I build AI into how I design,
+          from discovery through delivery.
         </motion.p>
 
         {/* Magnetic CTAs */}
@@ -233,7 +216,7 @@ export default function Hero() {
               data-cursor="View"
               className="inline-flex items-center gap-2 bg-[#111] text-white text-sm font-medium px-7 py-3 rounded-full hover:bg-[#F59E0B] hover:text-[#111] transition-all duration-250 active:scale-[0.97]"
             >
-              View Work
+              View work
             </Link>
           </MagneticButton>
 
@@ -243,7 +226,7 @@ export default function Hero() {
               data-cursor=""
               className="text-sm text-[#888] hover:text-[#111] transition-colors duration-200 underline underline-offset-4 decoration-[#F59E0B]/50 hover:decoration-[#F59E0B]"
             >
-              Get in Touch
+              Get in touch
             </Link>
           </MagneticButton>
         </motion.div>
@@ -253,12 +236,12 @@ export default function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 1.7 }}
-          className="flex items-center gap-8 mt-16 pt-8 border-t border-[#e8e8e8] w-full max-w-sm justify-center"
+          className="flex items-center gap-6 sm:gap-10 mt-16 pt-8 border-t border-[#e8e8e8] w-full max-w-lg justify-center"
         >
           {[
-            { value: "7+", label: "Years" },
-            { value: "50+", label: "Projects" },
-            { value: "30+", label: "Clients" },
+            { value: "7+", label: "Years designing" },
+            { value: "B2B SaaS", label: "Primary focus" },
+            { value: "Design + Build", label: "End to end" },
           ].map(({ value, label }) => (
             <motion.div
               key={label}
@@ -266,7 +249,9 @@ export default function Hero() {
               transition={{ duration: 0.2 }}
               className="text-center"
             >
-              <div className="font-display text-xl text-[#111]">{value}</div>
+              <div className="font-display text-base sm:text-xl text-[#111] whitespace-nowrap">
+                {value}
+              </div>
               <div className="text-[11px] text-[#bbb] tracking-wide uppercase mt-0.5">
                 {label}
               </div>
