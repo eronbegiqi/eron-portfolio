@@ -1,18 +1,25 @@
 import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
-import Projects from "@/components/Projects";
+import Work from "@/components/Work";
 import Services from "@/components/Services";
 import Clients from "@/components/Clients";
 import About from "@/components/About";
 import Contact from "@/components/Contact";
+import { projects } from "@/data/projects";
+import { imageExists } from "@/lib/image-exists";
 
 export default function Home() {
+  const workProjects = projects.map((project) => ({
+    ...project,
+    thumbnailExists: imageExists(project.thumbnail),
+  }));
+
   return (
     <>
       <Nav />
       <main>
         <Hero />
-        <Projects />
+        <Work projects={workProjects} />
         <Services />
         <Clients />
         <About />
