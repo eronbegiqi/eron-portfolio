@@ -22,9 +22,9 @@ const dmSerifDisplay = DM_Serif_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Eron Begiqi — UX/UI Designer & Web Developer",
+  title: "Eron Begiqi — Product Designer, B2B SaaS",
   description:
-    "Portfolio of Eron Begiqi — UX/UI Designer and Web Developer crafting digital experiences that balance beauty with function.",
+    "Portfolio of Eron Begiqi — a product designer for complex B2B SaaS, focused on data-rich workflows, multi-product design systems, and an AI-native design practice.",
 };
 
 export default function RootLayout({
