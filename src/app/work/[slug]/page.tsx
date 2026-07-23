@@ -1,9 +1,11 @@
 import { notFound } from "next/navigation";
-import { projects, getProject } from "@/lib/projects";
+import { caseStudies, getCaseStudy, getNextCaseStudy } from "@/data/case-studies";
+import { getProject } from "@/data/projects";
+import { imageExists } from "@/lib/image-exists";
 import CaseStudy from "@/components/CaseStudy";
 
 export function generateStaticParams() {
-  return projects.map((p) => ({ slug: p.slug }));
+  return caseStudies.map((c) => ({ slug: c.slug }));
 }
 
 export async function generateMetadata({
@@ -12,11 +14,11 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const project = getProject(slug);
-  if (!project) return {};
+  const caseStudy = getCaseStudy(slug);
+  if (!caseStudy) return {};
   return {
-    title: `${project.title} — Eron Begiqi`,
-    description: project.description,
+    title: `${caseStudy.title} — Eron Begiqi`,
+    description: caseStudy.tagline,
   };
 }
 
@@ -26,7 +28,36 @@ export default async function CaseStudyPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const project = getProject(slug);
-  if (!project) notFound();
-  return <CaseStudy project={project} />;
+  const caseStudy = getCaseStudy(slug);
+  if (!caseStudy) notFound();
+
+  const nextCaseStudy = getNextCaseStudy(slug);
+  const nextProjectMeta = nextCaseStudy ? getProject(nextCaseStudy.slug) : undefined;
+
+  const nextProject =
+    nextCaseStudy && nextProjectMeta
+      ? {
+          slug: nextCaseStudy.slug,
+          title: nextCaseStudy.title,
+          category: nextCaseStudy.category,
+          year: nextCaseStudy.year,
+          thumbnail: nextProjectMeta.thumbnail,
+          thumbnailAlt: nextProjectMeta.thumbnailAlt,
+          thumbnailExists: imageExists(nextProjectMeta.thumbnail),
+        }
+      : null;
+
+  return (
+    <CaseStudy
+      caseStudy={caseStudy}
+      totalCount={caseStudies.length}
+      coverExists={imageExists(caseStudy.cover)}
+      overviewImageExists={imageExists(caseStudy.overviewImage)}
+      gallery={caseStudy.gallery.map((item) => ({
+        ...item,
+        exists: imageExists(item.src),
+      }))}
+      nextProject={nextProject}
+    />
+  );
 }

@@ -3,7 +3,12 @@
 import { useRef, useEffect, useState } from "react";
 import { motion, useScroll, useInView, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { type Project, type Phase, getNextProject } from "@/lib/projects";
+import type {
+  CaseStudy as CaseStudyData,
+  Phase,
+  GalleryItem,
+} from "@/data/case-studies";
+import ProjectImage from "./ProjectImage";
 
 // ── Reading progress bar ────────────────────────────────────────────────────
 function ReadingProgress() {
@@ -203,7 +208,7 @@ function PhaseMockup({ phase }: { phase: string }) {
     );
   }
 
-  // phase === "04" — Delivery: specs/annotation
+  // phase === "04" (or any other index) — Delivery: specs/annotation
   return (
     <div className="w-full h-full flex items-center justify-center p-6">
       <div className="w-full max-w-xs space-y-2">
@@ -240,6 +245,168 @@ function PhaseMockup({ phase }: { phase: string }) {
   );
 }
 
+// ── AI-native process — dedicated block, central to the new positioning ────
+function AIProcessSection({
+  aiProcess,
+  accent,
+}: {
+  aiProcess: string;
+  accent: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const steps = ["Figma MCP", "Claude-anchored prompts", "Prototype & build"];
+
+  return (
+    <section
+      ref={ref}
+      className="py-20 px-6 md:px-12 lg:px-20 border-b border-[#e8e8e8]"
+      style={{ background: `linear-gradient(180deg, #fff 0%, ${accent}0d 100%)` }}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 18 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
+        className="max-w-4xl mx-auto w-full"
+      >
+        <div className="flex items-center gap-3 mb-8">
+          <span className="h-px w-8" style={{ backgroundColor: accent }} />
+          <span
+            className="text-[11px] tracking-[0.18em] uppercase"
+            style={{ color: accent }}
+          >
+            AI-native process
+          </span>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3 mb-10">
+          {steps.map((step, i) => (
+            <div key={step} className="flex items-center gap-3">
+              <span
+                className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[12px] text-[#333]"
+                style={{ borderColor: `${accent}55` }}
+              >
+                <span
+                  className="w-1.5 h-1.5 rounded-full"
+                  style={{ backgroundColor: accent }}
+                />
+                {step}
+              </span>
+              {i < steps.length - 1 && (
+                <span className="text-[#ccc]" aria-hidden>
+                  →
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {aiProcess.split("\n\n").map((para, i) => (
+          <p key={i} className="text-[#555] leading-[1.85] mb-5 text-base last:mb-0">
+            {para}
+          </p>
+        ))}
+      </motion.div>
+    </section>
+  );
+}
+
+// ── Gallery — wide full-width, pair two-up, mobile in a phone frame ─────────
+function GallerySection({
+  gallery,
+}: {
+  gallery: (GalleryItem & { exists: boolean })[];
+}) {
+  const wideItems = gallery.filter((g) => g.kind === "wide");
+  const pairItems = gallery.filter((g) => g.kind === "pair");
+  const mobileItems = gallery.filter((g) => g.kind === "mobile");
+
+  return (
+    <section className="py-20 px-6 md:px-12 lg:px-20 border-b border-[#e8e8e8] max-w-7xl mx-auto w-full">
+      <div className="flex items-end justify-between border-b border-[#e8e8e8] pb-8 mb-16">
+        <h2 className="font-display text-[clamp(2rem,4vw,3rem)]">Gallery</h2>
+        <span className="text-[11px] text-[#bbb] tracking-[0.18em] uppercase">
+          Screens
+        </span>
+      </div>
+
+      <div className="space-y-6">
+        {wideItems.map((item) => (
+          <figure key={item.src}>
+            <ProjectImage
+              src={item.src}
+              alt={item.alt}
+              exists={item.exists}
+              width={2400}
+              height={1350}
+              sizes="(max-width: 1280px) 100vw, 1280px"
+              aspect="16 / 9"
+              dims="2400×1350"
+              slotName="Gallery wide"
+              className="w-full rounded-xl"
+            />
+            {item.caption && (
+              <figcaption className="text-[12px] text-[#888] mt-2">
+                {item.caption}
+              </figcaption>
+            )}
+          </figure>
+        ))}
+
+        {pairItems.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {pairItems.map((item) => (
+              <figure key={item.src}>
+                <ProjectImage
+                  src={item.src}
+                  alt={item.alt}
+                  exists={item.exists}
+                  width={1400}
+                  height={1050}
+                  sizes="(max-width: 639px) 100vw, 50vw"
+                  aspect="4 / 3"
+                  dims="1400×1050"
+                  slotName="Gallery pair"
+                  className="w-full rounded-xl"
+                />
+                {item.caption && (
+                  <figcaption className="text-[12px] text-[#888] mt-2">
+                    {item.caption}
+                  </figcaption>
+                )}
+              </figure>
+            ))}
+          </div>
+        )}
+
+        {mobileItems.length > 0 && (
+          <div className="flex justify-center pt-4">
+            {mobileItems.map((item) => (
+              <figure
+                key={item.src}
+                className="w-[260px] overflow-hidden rounded-[2.5rem] border-[10px] border-[#111]"
+              >
+                <ProjectImage
+                  src={item.src}
+                  alt={item.alt}
+                  exists={item.exists}
+                  width={1080}
+                  height={1920}
+                  sizes="280px"
+                  aspect="9 / 16"
+                  dims="1080×1920"
+                  slotName="Gallery mobile"
+                  className="w-full"
+                />
+              </figure>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
 // ── Phase item (extracted to avoid hooks-in-loop) ────────────────────────────
 function PhaseItem({
   phase,
@@ -253,6 +420,7 @@ function PhaseItem({
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const isEven = index % 2 === 0;
+  const displayNumber = String(index + 1).padStart(2, "0");
 
   return (
     <motion.div
@@ -268,15 +436,16 @@ function PhaseItem({
       <div className={`py-12 ${isEven ? "lg:pr-16" : "lg:pl-16 lg:order-2"}`}>
         <div className="flex items-center gap-3 mb-6">
           <span className="font-display text-sm" style={{ color: accent }}>
-            {phase.number}
+            {displayNumber}
           </span>
           <span className="h-px flex-1 bg-[#e8e8e8]" />
-          <span className="text-[11px] text-[#bbb]">{phase.duration}</span>
+          {phase.label && (
+            <span className="text-[11px] text-[#bbb]">{phase.label}</span>
+          )}
         </div>
-        <h3 className="font-display text-2xl mb-3">{phase.title}</h3>
-        <p className="text-sm text-[#666] leading-[1.8] mb-7">{phase.description}</p>
+        <h3 className="font-display text-2xl mb-7">{phase.title}</h3>
         <ul className="space-y-2.5">
-          {phase.details.map((detail, j) => (
+          {phase.points.map((point, j) => (
             <motion.li
               key={j}
               initial={{ opacity: 0, x: -8 }}
@@ -288,7 +457,7 @@ function PhaseItem({
                 className="mt-[7px] w-1 h-1 rounded-full flex-shrink-0"
                 style={{ backgroundColor: accent }}
               />
-              {detail}
+              {point}
             </motion.li>
           ))}
         </ul>
@@ -300,15 +469,40 @@ function PhaseItem({
           isEven ? "lg:border-l" : "lg:border-r"
         } bg-[#fafafa]`}
       >
-        <PhaseMockup phase={phase.number} />
+        <PhaseMockup phase={displayNumber} />
       </div>
     </motion.div>
   );
 }
 
+interface NextProject {
+  slug: string;
+  title: string;
+  category: string;
+  year: string;
+  thumbnail: string;
+  thumbnailAlt: string;
+  thumbnailExists: boolean;
+}
+
+interface CaseStudyProps {
+  caseStudy: CaseStudyData;
+  totalCount: number;
+  coverExists: boolean;
+  overviewImageExists: boolean;
+  gallery: (GalleryItem & { exists: boolean })[];
+  nextProject: NextProject | null;
+}
+
 // ── Main component ───────────────────────────────────────────────────────────
-export default function CaseStudy({ project }: { project: Project }) {
-  const nextProject = getNextProject(project.slug);
+export default function CaseStudy({
+  caseStudy,
+  totalCount,
+  coverExists,
+  overviewImageExists,
+  gallery,
+  nextProject,
+}: CaseStudyProps) {
   const outcomesRef = useRef<HTMLDivElement>(null);
   const outcomesInView = useInView(outcomesRef, { once: true, margin: "-80px" });
 
@@ -328,18 +522,35 @@ export default function CaseStudy({ project }: { project: Project }) {
         </Link>
       </div>
 
-      {/* ── Hero ── */}
+      {/* ── Cover ── */}
+      <div className="pt-20 px-6 md:px-12 lg:px-20 max-w-7xl mx-auto w-full">
+        <ProjectImage
+          src={caseStudy.cover}
+          alt={caseStudy.coverAlt}
+          exists={coverExists}
+          width={2400}
+          height={1350}
+          sizes="(max-width: 1280px) 100vw, 1280px"
+          aspect="16 / 9"
+          dims="2400×1350"
+          slotName="Case study cover"
+          priority
+          className="w-full rounded-2xl"
+        />
+      </div>
+
+      {/* ── Meta header ── */}
       <header
-        className="relative min-h-[85vh] flex flex-col justify-end overflow-hidden"
+        className="relative flex flex-col justify-end overflow-hidden"
         style={{
-          background: `linear-gradient(160deg, ${project.from} 0%, ${project.to} 100%)`,
+          background: `linear-gradient(160deg, ${caseStudy.from} 0%, ${caseStudy.to} 100%)`,
         }}
       >
         {/* Dot grid */}
         <div
           className="absolute inset-0"
           style={{
-            backgroundImage: `radial-gradient(circle, ${project.gridColor} 1.5px, transparent 1.5px)`,
+            backgroundImage: `radial-gradient(circle, ${caseStudy.gridColor} 1.5px, transparent 1.5px)`,
             backgroundSize: "32px 32px",
           }}
         />
@@ -347,12 +558,12 @@ export default function CaseStudy({ project }: { project: Project }) {
         {/* Large project number watermark */}
         <div
           className="absolute right-8 top-1/2 -translate-y-1/2 font-display text-[18vw] leading-none select-none pointer-events-none"
-          style={{ color: project.accent, opacity: 0.08 }}
+          style={{ color: caseStudy.accent, opacity: 0.08 }}
         >
-          {project.number}
+          {caseStudy.number}
         </div>
 
-        <div className="relative z-10 px-6 md:px-12 lg:px-20 pb-16 pt-32 max-w-7xl mx-auto w-full">
+        <div className="relative z-10 px-6 md:px-12 lg:px-20 py-16 max-w-7xl mx-auto w-full">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
@@ -360,26 +571,26 @@ export default function CaseStudy({ project }: { project: Project }) {
           >
             <p
               className="text-[11px] uppercase tracking-[0.2em] mb-5"
-              style={{ color: project.accent }}
+              style={{ color: caseStudy.accent }}
             >
-              {project.number} / 04 — {project.category}
+              {caseStudy.number} / {String(totalCount).padStart(2, "0")} — {caseStudy.category}
             </p>
 
             <h1 className="font-display text-[clamp(3.5rem,8vw,7rem)] leading-[0.9] tracking-tight mb-6">
-              {project.title}
+              {caseStudy.title}
             </h1>
 
             <p className="text-base text-[#555] max-w-xl leading-[1.7] mb-10">
-              {project.tagline}
+              {caseStudy.tagline}
             </p>
 
             {/* Metadata strip */}
             <div className="flex flex-wrap gap-8 border-t border-black/[0.08] pt-8">
               {[
-                { label: "Role", value: project.role },
-                { label: "Timeline", value: project.timeline },
-                { label: "Year", value: project.year },
-                { label: "Team", value: project.team },
+                { label: "Role", value: caseStudy.role },
+                { label: "Timeline", value: caseStudy.timeline },
+                { label: "Year", value: caseStudy.year },
+                { label: "Team", value: caseStudy.team },
               ].map(({ label, value }) => (
                 <div key={label}>
                   <p className="text-[10px] text-[#aaa] uppercase tracking-[0.15em] mb-1">
@@ -398,10 +609,10 @@ export default function CaseStudy({ project }: { project: Project }) {
         <div className="max-w-4xl mx-auto">
           <div
             className="w-8 h-[2px] mb-8"
-            style={{ backgroundColor: project.accent }}
+            style={{ backgroundColor: caseStudy.accent }}
           />
           <blockquote className="font-display text-[clamp(1.5rem,3.5vw,2.5rem)] leading-[1.3] text-[#111]">
-            &ldquo;{project.challenge}&rdquo;
+            &ldquo;{caseStudy.challenge}&rdquo;
           </blockquote>
         </div>
       </section>
@@ -409,22 +620,34 @@ export default function CaseStudy({ project }: { project: Project }) {
       {/* ── Overview + Metadata ── */}
       <section className="py-20 px-6 md:px-12 lg:px-20 border-b border-[#e8e8e8] max-w-7xl mx-auto w-full">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-16 items-start">
-          {/* Text */}
+          {/* Text + overview image */}
           <div>
             <h2 className="font-display text-3xl mb-8">Overview</h2>
-            {project.overview.split("\n\n").map((para, i) => (
+            {caseStudy.overview.split("\n\n").map((para, i) => (
               <p key={i} className="text-[#555] leading-[1.85] mb-5 text-base">
                 {para}
               </p>
             ))}
+            <ProjectImage
+              src={caseStudy.overviewImage}
+              alt={caseStudy.overviewImageAlt}
+              exists={overviewImageExists}
+              width={2400}
+              height={1350}
+              sizes="(max-width: 1280px) 100vw, 900px"
+              aspect="16 / 9"
+              dims="2400×1350"
+              slotName="Overview image"
+              className="w-full rounded-xl mt-4"
+            />
           </div>
 
           {/* Sticky sidebar card */}
           <div className="lg:sticky lg:top-24 space-y-0 border border-[#e8e8e8] rounded-2xl overflow-hidden">
             {[
-              { label: "My Role", value: project.role },
-              { label: "Timeline", value: project.timeline },
-              { label: "Team", value: project.team },
+              { label: "My Role", value: caseStudy.role },
+              { label: "Timeline", value: caseStudy.timeline },
+              { label: "Team", value: caseStudy.team },
             ].map(({ label, value }) => (
               <div key={label} className="px-5 py-4 border-b border-[#e8e8e8]">
                 <p className="text-[10px] text-[#bbb] uppercase tracking-[0.14em] mb-1">
@@ -439,7 +662,7 @@ export default function CaseStudy({ project }: { project: Project }) {
                 Tools
               </p>
               <div className="flex flex-wrap gap-1.5">
-                {project.tools.map((tool) => (
+                {caseStudy.tools.map((tool) => (
                   <span
                     key={tool}
                     className="text-[11px] border border-[#e8e8e8] px-2 py-0.5 rounded-full text-[#666]"
@@ -455,11 +678,11 @@ export default function CaseStudy({ project }: { project: Project }) {
                 Deliverables
               </p>
               <ul className="space-y-1.5">
-                {project.deliverables.map((d) => (
+                {caseStudy.deliverables.map((d) => (
                   <li key={d} className="flex items-start gap-2 text-[11px] text-[#666]">
                     <span
                       className="mt-[5px] w-1 h-1 rounded-full flex-shrink-0"
-                      style={{ backgroundColor: project.accent }}
+                      style={{ backgroundColor: caseStudy.accent }}
                     />
                     {d}
                   </li>
@@ -470,28 +693,34 @@ export default function CaseStudy({ project }: { project: Project }) {
         </div>
       </section>
 
+      {/* ── AI-native process ── */}
+      <AIProcessSection aiProcess={caseStudy.aiProcess} accent={caseStudy.accent} />
+
       {/* ── Process phases ── */}
       <section className="py-20 px-6 md:px-12 lg:px-20 max-w-7xl mx-auto w-full">
         <div className="flex items-end justify-between border-b border-[#e8e8e8] pb-8 mb-16">
           <h2 className="font-display text-[clamp(2rem,4vw,3rem)]">Process</h2>
           <span className="text-[11px] text-[#bbb] tracking-[0.18em] uppercase">
-            4 phases
+            {caseStudy.phases.length} phases
           </span>
         </div>
 
         <div className="space-y-0">
-          {project.phases.map((phase, i) => (
-            <PhaseItem key={phase.number} phase={phase} index={i} accent={project.accent} />
+          {caseStudy.phases.map((phase, i) => (
+            <PhaseItem key={i} phase={phase} index={i} accent={caseStudy.accent} />
           ))}
         </div>
       </section>
+
+      {/* ── Gallery ── */}
+      <GallerySection gallery={gallery} />
 
       {/* ── Outcomes ── */}
       <section
         ref={outcomesRef}
         className="py-20 px-6 md:px-12 lg:px-20 border-t border-[#e8e8e8]"
         style={{
-          background: `linear-gradient(180deg, #fff 0%, ${project.from} 100%)`,
+          background: `linear-gradient(180deg, #fff 0%, ${caseStudy.from} 100%)`,
         }}
       >
         <div className="max-w-7xl mx-auto w-full">
@@ -503,7 +732,7 @@ export default function CaseStudy({ project }: { project: Project }) {
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-0 divide-x divide-black/[0.07]">
-            {project.outcomes.map((outcome, i) => (
+            {caseStudy.outcomes.map((outcome, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 16 }}
@@ -517,16 +746,11 @@ export default function CaseStudy({ project }: { project: Project }) {
               >
                 <div
                   className="font-display text-[clamp(2.5rem,5vw,3.75rem)] leading-none tabular-nums mb-3"
-                  style={{ color: project.accent }}
+                  style={{ color: caseStudy.accent }}
                 >
                   <MetricCounter value={outcome.value} active={outcomesInView} />
                 </div>
-                <p className="text-sm font-semibold text-[#111] mb-1.5">
-                  {outcome.label}
-                </p>
-                <p className="text-[12px] text-[#888] leading-[1.6]">
-                  {outcome.description}
-                </p>
+                <p className="text-sm font-semibold text-[#111]">{outcome.label}</p>
               </motion.div>
             ))}
           </div>
@@ -539,9 +763,23 @@ export default function CaseStudy({ project }: { project: Project }) {
           <Link
             href={`/work/${nextProject.slug}`}
             data-cursor="View"
-            className="group block px-6 md:px-12 lg:px-20 py-16 max-w-7xl mx-auto w-full"
+            className="group flex flex-col sm:flex-row sm:items-center gap-8 px-6 md:px-12 lg:px-20 py-16 max-w-7xl mx-auto w-full"
           >
-            <div className="flex items-end justify-between">
+            <div className="w-full sm:w-48 flex-shrink-0 overflow-hidden rounded-xl">
+              <ProjectImage
+                src={nextProject.thumbnail}
+                alt={nextProject.thumbnailAlt}
+                exists={nextProject.thumbnailExists}
+                width={1200}
+                height={750}
+                sizes="192px"
+                aspect="16 / 10"
+                dims="1200×750"
+                slotName="Wall card thumb"
+                className="w-full"
+              />
+            </div>
+            <div className="flex flex-1 items-end justify-between">
               <div>
                 <p className="text-[11px] text-[#bbb] tracking-[0.18em] uppercase mb-3">
                   Next Project
@@ -549,14 +787,14 @@ export default function CaseStudy({ project }: { project: Project }) {
                 <h3 className="font-display text-[clamp(2.5rem,6vw,5rem)] leading-[0.9] group-hover:translate-x-2 transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]">
                   {nextProject.title}
                 </h3>
+                <p className="text-sm text-[#888] mt-4">
+                  {nextProject.category} — {nextProject.year}
+                </p>
               </div>
-              <div className="text-3xl text-[#bbb] group-hover:text-[#F59E0B] group-hover:translate-x-1 transition-all duration-300">
+              <div className="hidden sm:block text-3xl text-[#bbb] group-hover:text-[#F59E0B] group-hover:translate-x-1 transition-all duration-300">
                 →
               </div>
             </div>
-            <p className="text-sm text-[#888] mt-4">
-              {nextProject.category} — {nextProject.year}
-            </p>
           </Link>
         </section>
       )}
