@@ -9,7 +9,7 @@ import MagneticButton from "./MagneticButton";
 
 type FormState = "idle" | "sending" | "sent" | "error";
 
-export default function Contact() {
+export default function Contact({ initialProject }: { initialProject?: string } = {}) {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const [formState, setFormState] = useState<FormState>("idle");
@@ -124,9 +124,11 @@ export default function Contact() {
               Project type
             </Label>
             <Input
+              key={initialProject ?? "empty"}
               id="project"
               name="project"
               placeholder="e.g. Website redesign, mobile app, brand identity..."
+              defaultValue={initialProject}
               disabled={formState === "sending" || formState === "sent"}
               className="rounded-none border-x-0 border-t-0 border-b border-[#e8e8e8] px-0 h-10 focus-visible:ring-0 focus-visible:border-[#F59E0B] transition-colors duration-200 placeholder:text-[#ccc] text-sm disabled:opacity-50"
             />
