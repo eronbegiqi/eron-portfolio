@@ -22,6 +22,7 @@ const dmSerifDisplay = DM_Serif_Display({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://eron-portfolio-murex.vercel.app"),
   title: "Eron Begiqi — Product Designer, B2B SaaS",
   description:
     "Portfolio of Eron Begiqi — a product designer for complex B2B SaaS, focused on data-rich workflows, multi-product design systems, and an AI-native design practice.",
