@@ -73,6 +73,22 @@ export default function Nav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Initialize Cal.com embed
+  useEffect(() => {
+    (async function () {
+      const { getCalApi } = await import("@calcom/embed-react");
+      const cal = await getCalApi({ namespace: "15min" });
+      cal("ui", {
+        cssVarsPerTheme: {
+          dark: { "cal-brand": "#F59E0B" },
+          light: { "cal-brand": "#F59E0B" },
+        },
+        hideEventTypeDetails: false,
+        layout: "month_view",
+      });
+    })();
+  }, []);
+
   return (
     <motion.header
       initial={{ y: -80, opacity: 0 }}
@@ -102,26 +118,33 @@ export default function Nav() {
         ))}
       </nav>
 
-      {/* Availability badge — expands on hover */}
-      <motion.div
+      {/* Availability badge — opens Cal.com booking on click */}
+      <button
+        data-cal-namespace="15min"
+        data-cal-link="eronbegiqi/15min"
+        data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
         data-cursor="Hire me"
-        initial={false}
-        whileHover="hovered"
-        className="flex items-center gap-2 text-sm text-[#6b6b6b] select-none overflow-hidden"
+        className="group"
       >
-        <span className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0 animate-[pulse-dot_2s_ease-in-out_infinite]" />
-        <span className="hidden sm:inline">Available</span>
-        <motion.span
-          variants={{
-            hovered: { width: "auto", opacity: 1, marginLeft: 2 },
-          }}
-          initial={{ width: 0, opacity: 0 }}
-          transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
-          className="hidden sm:inline text-[#F59E0B] text-xs font-medium overflow-hidden whitespace-nowrap"
+        <motion.div
+          initial={false}
+          whileHover="hovered"
+          className="flex items-center gap-2 text-sm text-[#6b6b6b] select-none overflow-hidden"
         >
-          — let&apos;s chat →
-        </motion.span>
-      </motion.div>
+          <span className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0 animate-[pulse-dot_2s_ease-in-out_infinite]" />
+          <span className="hidden sm:inline">Available</span>
+          <motion.span
+            variants={{
+              hovered: { width: "auto", opacity: 1, marginLeft: 2 },
+            }}
+            initial={{ width: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+            className="hidden sm:inline text-[#F59E0B] text-xs font-medium overflow-hidden whitespace-nowrap"
+          >
+            — let&apos;s chat →
+          </motion.span>
+        </motion.div>
+      </button>
     </motion.header>
   );
 }
