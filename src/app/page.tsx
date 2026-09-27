@@ -3,6 +3,7 @@ import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
 import Work from "@/components/Work";
 import Services from "@/components/Services";
+import Technologies from "@/components/Technologies";
 import Clients from "@/components/Clients";
 import About from "@/components/About";
 import Contact from "@/components/Contact";
@@ -23,6 +24,7 @@ export default function Home() {
         <Hero />
         <Work projects={workProjects} />
         <Services />
+        <Technologies />
         <Clients />
         <About />
         <Suspense fallback={<Contact />}>
