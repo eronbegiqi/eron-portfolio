@@ -20,6 +20,10 @@ const clients = [
   { name: "Adopt Animals", slug: "adoptanimals-logo", ext: "webp" },
   { name: "Pieridae", slug: "pieridae-logo", ext: "webp" },
   { name: "Coinlaunch", slug: "coinlaunch-logo", ext: "webp" },
+  { name: "L-Moto", slug: "lmoto-logo", ext: "svg" },
+  { name: "A-Motors", slug: "amotors-logo", ext: "svg" },
+  { name: "SulPayments", slug: "sulpayments-logo", ext: "svg" },
+  { name: "Tive", slug: "tive-logo", ext: "svg" },
 ].map((c) => ({
   ...c,
   gray: `/clients/${c.slug}-gray.${c.ext}`,
